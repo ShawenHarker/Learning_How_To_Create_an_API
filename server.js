@@ -1,13 +1,6 @@
-let wordScore = [
-    {
-        "happy": 5,
-        "impostor-syndrome": -5,
-        "positive": 4,
-        "go-getter": 4,
-        "love": 5,
-        "sad": 0
-    }
-]
+let fs = require('fs');
+let data = fs.readFileSync('wordScore.json');
+let wordScore = JSON.parse(data);
 
 console.log("server is starting!!!");
 
@@ -29,16 +22,25 @@ const addWord = (request, response) => {
     let score = Number(data.score);
     let reply;
     if (!score) {
-        reply = {
-            msg: `Score is required!!!`
+        let reply = {
+            status: `Score is required!!!`
         }
+        response.send(reply);
     }else {
         wordScore[word] = score;
-        reply = {
-            msg: `Thank you for your word.`
+        let data = JSON.stringify(wordScore, null, 2);
+
+        const wordAdded = () => {
+            console.log(`You all set...`);
+            let reply = {
+                wordAdd: word,
+                score: score,
+                status: `Word and score successfully added.`
+            }
+            response.send(reply);
         }
-    }
-    response.send(reply);
+        fs.writeFile('wordScore.json', data, wordAdded);
+    } 
 }
 
 // The colon in front of the dog and num, indicate that it is a parameter and it can be anything the client types.
