@@ -1,11 +1,13 @@
-let wordScore = {
-    "happy": 5,
-    "impostor-syndrome": -5,
-    "positive": 4,
-    "go-getter": 4,
-    "love": 5,
-    "sad": 0
-}
+let wordScore = [
+    {
+        "happy": 5,
+        "impostor-syndrome": -5,
+        "positive": 4,
+        "go-getter": 4,
+        "love": 5,
+        "sad": 0
+    }
+]
 
 console.log("server is starting!!!");
 
