@@ -1,3 +1,12 @@
+let wordScore = {
+    "happy": 5,
+    "impostor-syndrome": -5,
+    "positive": 4,
+    "go-getter": 4,
+    "love": 5,
+    "sad": 0
+}
+
 console.log("server is starting!!!");
 
 let express = require('express');
@@ -12,20 +21,50 @@ var server = app.listen(3000, Listening);
 
 app.use(express.static('public'));
 
-/* 
-The var "data" gets the value of the parameter that the user inputs in the search bar.
-The function below allows me to input two values to my search bar to complete a route to my server. 
-The first value is the name of the thing I want to search and the last is the amount of times I want to loop through it and have it printed out on the screen. 
-*/
-const loveDogs = (request, response) => {
+const addWord = (request, response) => {
     let data = request.params;
-    let num = data.num;
-    let reply = "";
-    for (let i = 0; i < num; i++) {
-        reply += `I love ${data.dogs} too!!!`;
-    } 
+    let word = data.word;
+    let score = Number(data.score);
+    let reply;
+    if (!score) {
+        reply = {
+            msg: `Score is required!!!`
+        }
+    }else {
+        wordScore[word] = score;
+        reply = {
+            msg: `Thank you for your word.`
+        }
+    }
     response.send(reply);
 }
 
-// The colon in front of the dog and num, indicate that it is a parameter and it can be anything the client types. 
-app.get("/search/:dogs/:num", loveDogs)
+// The colon in front of the dog and num, indicate that it is a parameter and it can be anything the client types.
+// The ? means that the last parameter is optional. 
+app.get("/add/:word/:score?", addWord)
+
+const allWords = (request, response) => {
+    response.send(wordScore);
+}
+
+app.get("/wordScore", allWords)
+
+const searchWord = (request, response) => {
+    let word = request.params.word;
+    let reply;
+    if (wordScore[word]) {
+        reply = {
+            status: "found",
+            word: word,
+            score: wordScore[word]
+        }
+    }else {
+        reply = {
+            status: "not found",
+            word: word
+        }
+    }
+    response.send(reply);
+}
+
+app.get("/search/:word", searchWord)
